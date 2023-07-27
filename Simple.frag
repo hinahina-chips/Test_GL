@@ -1,8 +1,12 @@
 #version 330 core
 
-varying vec3 v_normal;
+in vec3 position; // 頂点シェーダーから受け取る頂点座標
+in vec3 normal;   // 頂点シェーダーから受け取る法線ベクトル
+in vec2 uv;       // 頂点シェーダーから受け取るテクスチャ座標
 
-uniform sampler2D tex_matcap;
+out vec4 fragColor;
+
+uniform sampler2D texture;
 
 
 float NormToUV(float n)
@@ -16,15 +20,15 @@ float NormToUV(float n)
 
 vec4 GetMatcapColor()
 {
-  vec3 n = normalize(v_normal);
+  vec3 n = normalize(normal);
   float tx = NormToUV(n.x);
   float ty = NormToUV(-n.y);
 
   vec4 env_texcoord = vec4(tx, ty, 0.0, 1.0);
-  return texture2DProj(tex_matcap, env_texcoord);
+  return texture2DProj(texture, env_texcoord);
 }
 
 void main (void)
 {
-  gl_FragColor = GetMatcapColor();
+  fragColor = GetMatcapColor();
 }
